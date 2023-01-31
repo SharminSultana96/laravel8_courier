@@ -1,0 +1,41 @@
+<?php
+
+use App\Http\Controllers\backend\LoginController;
+use App\Http\Controllers\backend\UserController;
+use App\Http\Controllers\frontend\HomeController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+// Frontend Routes
+Route::get('/', [HomeController::class, 'Index'])->name('home');
+Route::get('/about', [HomeController::class, 'About'])->name('about');
+Route::get('/services', [HomeController::class, 'Services'])->name('services');
+Route::get('/gallery', [HomeController::class, 'Gallery'])->name('gallery');
+Route::get('/team', [HomeController::class, 'Team'])->name('team');
+Route::get('/contact', [HomeController::class, 'Contact'])->name('contact');
+
+//Route::get('/admin', [LoginController::class, 'login']);
+
+
+// Backend Routes
+Route::prefix('admin')->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+    /// Another line
+    Route::resource('/users', UserController::class);
+    Route::resource('/products', ProductController::class);
+});
